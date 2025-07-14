@@ -9,7 +9,7 @@ For a successful MQTT communication you need:
 
 How to install?
 
-Download the latest stable version of Unexpected Maker SQUiXL DevOS [firmware](https://squixl.io/up/). Install this repo on your PC in a folder of your preference. Copy the files of this repo from the subfolders of: /src/Subscriber/SQUiXL-DevOS_A07/ to the same subfolders where you installed the Unexpected Maker SQUiXL DevOS firmware source files. You need to have installed on your PC: Microsoft Visual Studio Code (VSCode) and the PlatformIO extension. The first time I downloaded the sources of the UM SQUiXL DevOS firmware, it build and uploaded to my SQUiXL without problem. Yes, during the build phase there were various warnings of duplicate defined variables, however these warnings did not stall the build process.
+Download the latest stable version of Unexpected Maker SQUiXL DevOS [firmware](https://squixl.io/up/). Install this repo on your PC in a folder of your preference. Copy the files of this repo from the subfolders of: /src/Subscriber/SQUiXL-DevOS_A07/ to the same subfolders where you installed the Unexpected Maker SQUiXL DevOS firmware source files. You need to have installed on your PC: Microsoft Visual Studio Code (VSCode) and the PlatformIO extension. The first time I downloaded the sources of the UM SQUiXL DevOS firmware, it built and uploaded to my SQUiXL without problem. Yes, during the build phase there were various warnings of duplicate defined variables, however these warnings did not stall the build process.
 
 What files do my changes to the SQUiXL DevOS firmware sources contain?
 

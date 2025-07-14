@@ -21,7 +21,9 @@ After successful building and uploading the (modified) SQUiXL-DevOS, using ```Mi
 
 ```
 Enabled: YES 
-Broker IP : <The LAN or PUBLIC IP-address of your broker device>. In my case I use a Raspberry Pi Compute Module 5 running the mosquitto app. This RPiCM5 has LAN IP-address: 192.168.1.114.
+Broker IP : <The LAN or PUBLIC IP-address of your broker device>.
+In my case I use a Raspberry Pi Compute Module 5 running the mosquitto app.
+This RPiCM5 has LAN IP-address: 192.168._.___.
 Broker Port: 1883
 Device Name: <The name of your Publisher device>. In my case an Adafruit Feather ESP32-S3 TFT. Name: "Feath".
 

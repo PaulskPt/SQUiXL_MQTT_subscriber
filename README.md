@@ -55,8 +55,11 @@ struct MQTT_Payload
 As you can see, I added some items to the MQTT_Payload structure
 
 The mqtt messages are defined in a Json format.
-To keep the length of the payload of the MQTT messages under 256 bytes, I have chosen to abbreviate the names of this struct to:
-Why keep the payload length under 256 bytes? I had a problem when using a Pimoroni Presto device as Subscriber device, which uses Micropython.
+To keep the length of the payload of the MQTT messages under 256 bytes, I have chosen to abbreviate the names of this struct.
+
+Why keep the payload length under 256 bytes? 
+
+I had a problem when using a Pimoroni Presto device as Subscriber device, which uses Micropython.
 I discovered that MQTT messages received were cutoff. Initially my MQTT Publisher device sent messages with full names of the structure shown above, which made the payload longer than 256 bytes. That is why I decided to abbreviate the names. I managed to reduce the payload length to less than 256 bytes. Since then the MQTT messages sent by the MQTT Publisher device were received complete.
 
 ```

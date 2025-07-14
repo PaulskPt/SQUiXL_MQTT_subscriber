@@ -1,0 +1,133 @@
+Thursday 2025-07-10 23h24 utc +1
+Board: Unexpected Maker SQUiXL
+IDE: Microsoft VSCode + PlatformIO
+
+Project: SQUiXL-DevOS Alpha v.07
+
+Modifications in files: mqtt.h, mqtt.cpp and ui_scrollarea.cpp 
+to receive and display mqtt messages sent by an Adafruit Feather ESP32-S3-TFT board running an Arduino sketch,
+and a mosquitto broker app running on a Raspberry Pi Compute Module 5 (RPiCM5).
+
+
+--- Terminal on COM5 | 115200 8-N-1
+--- Available filters and text transformations: colorize, debug, default, direct, esp32_exception_decoder, hexlify, log2file, nocontrol, printable, send_on_enter, time
+--- More details at https://bit.ly/pio-monitor-filters
+--- Quit: Ctrl+C | Menu: Ctrl+T | Help: Ctrl+T followed by Ctrl+H
+RV-3028-C7 connected!
+Does the RTC require NTP lookup? NO
+Starting MAX17048
+Battery empty threshold is now: 25%
+High voltage threshold is now: 4.08V
+Low voltage threshold is now: 3.50V
+
+Heap Log: setup
+Heap Size: 136824 of 238396
+Min Heap Size: 136680, Max Alloc Heap Size: 73716, PSRAM Free: 7839192
+Largest PSRAM Chunk Free 7733236
+
+WIFI: Attempting to connect....
+WIFI: Mode set to STA
+wifi status 3
+
+WIFI: Connected
+Using Local DNS - Primary: 1.1.1.1, Secondary: 8.8.8.8
+Added 11 cached char sizes for UbuntuMono_R & Ubuntu_Mono_B
+Screen Wallpaper faded in and displayed... loading children UI
+Loaded battery icons
+
+ ***Latest Version: 6, Build Version: 7, Should notify? no
+
+Starting webserver
+IP Address: 192.168.1.123
+
+Attempting MQTT Server Setup..
+
+MQTT: Attempting connection to 192.168.1.114
+Settings SAVE: Saved!
+MQTT: connected
+MQTT: Subscribing to topic: sensors/Feath/ambient                             <<<=== shows to which mqtt topic subscribed
+HTTPS request: https://rss.slashdot.org/slashdot/slashdotmain
+[ 12635][E][ssl_client.cpp:36] _handle_error(): [start_ssl_client():302]: (-32512) SSL - Memory allocation failed
+[ 12635][E][NetworkClientSecure.cpp:159] connect(): start_ssl_client: connect failed: -32512      
+[ 12643][E][NetworkClient.cpp:323] setSocketOption(): fail on 0, errno: 9, "Bad file number"
+** Response Code: -1
+[ 12650][E][NetworkClient.cpp:323] setSocketOption(): fail on 0, errno: 9, "Bad file number"      
+WIFI Download Error Count: 1
+
+Heap Log: wifi error
+Heap Size: 64048 of 238396
+Min Heap Size: 27800, Max Alloc Heap Size: 31732, PSRAM Free: 5740488
+Largest PSRAM Chunk Free 5636084
+
+Cached DNS for api.openweathermap.org as 141.95.47.139
+HTTP IP request: http://141.95.47.139/data/2.5/weather?q=Lisbon,PT&APPID=58645f61a07e14ae51192ac41b05f809&units=metric
+Temp: 20C, Feels Like: 20C, Humidity: 75, Pressure: 1018 hPa, Sea Level: 1018 hPa, Gnd Level: 1010 hPa
+04 - broken clouds(CLOUDS)
+Loading icon: 04
+Found OWcoord: lon -9.13, lat 38.72
+OW: Sunrise 05:20, sunset 20:03
+ OW: Wind dir 260deg, Speed 4.12m/s
+ HTTPS request: https://official-joke-api.appspot.com/jokes/random/5
+[ 16655][E][ssl_client.cpp:36] _handle_error(): [start_ssl_client():302]: (-32512) SSL - Memory allocation failed
+[ 16655][E][NetworkClientSecure.cpp:159] connect(): start_ssl_client: connect failed: -32512      
+[ 16664][E][NetworkClient.cpp:323] setSocketOption(): fail on 0, errno: 9, "Bad file number"      
+** Response Code: -1
+[ 16670][E][NetworkClient.cpp:323] setSocketOption(): fail on 0, errno: 9, "Bad file number"
+WIFI Download Error Count: 2
+
+Heap Log: wifi error
+Heap Size: 64076 of 238396
+Min Heap Size: 27800, Max Alloc Heap Size: 31732, PSRAM Free: 5731832
+Largest PSRAM Chunk Free 5636084
+
+New message on topic: sensors/Feath/ambient                <<<=== Receiving the first mqtt message from the mqtt Broker device.
+message: {"ow":"Feath","de":"PC-Lab","dc":"BME280","sc":"meas","vt":"f","ts":1752189757,"reads":{"t":{"v":29,"u":"C","mn":-10,"mx":50},"p":{"v":1005.6,"u":"mB","mn":800,"mx":1200},"a":{"v":63.5,"u":"m","mn":0,"mx":3000},"h":{"v":41.8,"u":"%","mn":0,"mx":100}}}
+
+MQTT: New Sensor owner: Feather
+MQTT: Added new sensor from Feather, loc: PC-Lab, dev: BME280 (Temperature) at: 2025-07-10 23:22:37
+
+MQTT: Added new sensor from Feather, loc: PC-Lab, dev: BME280 (Pressure   )
+Now has 2 sensors
+
+MQTT: Added new sensor from Feather, loc: PC-Lab, dev: BME280 (Altitude   )
+Now has 3 sensors
+
+MQTT: Added new sensor from Feather, loc: PC-Lab, dev: BME280 (Humidity   )
+Now has 4 sensors
+Owner: Feather
+New message on topic: sensors/Feath/ambient
+message: {"ow":"Feath","de":"PC-Lab","dc":"BME280","sc":"meas","vt":"f","ts":1752189817,"reads":{"t":{"v":29,"u":"C","mn":-10,"mx":50},"p":{"v":1005.6,"u":"mB","mn":800,"mx":1200},"a":{"v":63.9,"u":"m","mn":0,"mx":3000},"h":{"v":41.7,"u":"%","mn":0,"mx":100}}}
+MQTT: Updated sensor from Feather, loc: PC-Lab, dev: BME280 (Temperature) at: 2025-07-10 23:23:37
+MQTT: Updated sensor from Feather, loc: PC-Lab, dev: BME280 (Pressure   ) at: 2025-07-10 23:23:37
+MQTT: Updated sensor from Feather, loc: PC-Lab, dev: BME280 (Altitude   ) at: 2025-07-10 23:23:37
+MQTT: Updated sensor from Feather, loc: PC-Lab, dev: BME280 (Humidity   ) at: 2025-07-10 23:23:37
+Owner: Feather
+New message on topic: sensors/Feath/ambient
+message: {"ow":"Feath","de":"PC-Lab","dc":"BME280","sc":"meas","vt":"f","ts":1752189877,"reads":{"t":{"v":29,"u":"C","mn":-10,"mx":50},"p":{"v":1005.6,"u":"mB","mn":800,"mx":1200},"a":{"v":63.6,"u":"m","mn":0,"mx":3000},"h":{"v":41.7,"u":"%","mn":0,"mx":100}}}
+MQTT: Updated sensor from Feather, loc: PC-Lab, dev: BME280 (Temperature) at: 2025-07-10 23:24:37
+MQTT: Updated sensor from Feather, loc: PC-Lab, dev: BME280 (Pressure   ) at: 2025-07-10 23:24:37
+MQTT: Updated sensor from Feather, loc: PC-Lab, dev: BME280 (Altitude   ) at: 2025-07-10 23:24:37
+MQTT: Updated sensor from Feather, loc: PC-Lab, dev: BME280 (Humidity   ) at: 2025-07-10 23:24:37
+Owner: Feather
+New message on topic: sensors/Feath/ambient
+message: {"ow":"Feath","de":"PC-Lab","dc":"BME280","sc":"meas","vt":"f","ts":1752189937,"reads":{"t":{"v":29,"u":"C","mn":-10,"mx":50},"p":{"v":1005.6,"u":"mB","mn":800,"mx":1200},"a":{"v":63.8,"u":"m","mn":0,"mx":3000},"h":{"v":42.1,"u":"%","mn":0,"mx":100}}}
+MQTT: Updated sensor from Feather, loc: PC-Lab, dev: BME280 (Temperature) at: 2025-07-10 23:25:37
+MQTT: Updated sensor from Feather, loc: PC-Lab, dev: BME280 (Pressure   ) at: 2025-07-10 23:25:37
+MQTT: Updated sensor from Feather, loc: PC-Lab, dev: BME280 (Altitude   ) at: 2025-07-10 23:25:37
+MQTT: Updated sensor from Feather, loc: PC-Lab, dev: BME280 (Humidity   ) at: 2025-07-10 23:25:37
+Owner: Feather
+
+
+
+// ------------------------------------------
+SQUiXL MQTT Messages screen example:
+
+At:2025-07-11 00:50:36
+msgID: 1752194916
+Owner: Feather 
+Loc: PC-Lab, Sensor: BME280
+
+Temperature   29.3 °C
+Pressure    1005.3 mB
+Altitude      65.6 m
+Humidity      42.2 %

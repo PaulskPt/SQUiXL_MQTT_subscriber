@@ -1,0 +1,96 @@
+Saturday 2025-07-12 20h40 utc +1
+Board: Adafruit Feather ESP32-S3 TFT
+IDE Arduino v2.3.5
+Sketch: Feather_ESP32-S3_TFT_MQTT_test_for_SQUiXL_one_msg_only.ino 
+
+Serial Monitor output (from reset of the board):
+
+neopixel test
+❌ Couldn't find Adafruit LC709203F?
+Checking for Adafruit MAX1704X..
+✅ Found MAX17048 with Chip ID: 0xC
+displaySleepTime = 23
+displayAwakeTime = 8
+Default port (Wire) I2C scan: 0x23, 0x36, 0x51, 0x6A, 0x76, 
+✅ RTC found at address: 0x51. Starting it.
+getUnixTimeFromRTC(): HoursLocal = 20
+✅ BME280 address: 0x76
+✅ BME280 successfully (re-)initiated.
+✅ Connected to SSID: _________
+IP Address: 192.168._.___
+
+Timezone offset = 1 hour(s)
+Starting connection to NTP server...
+✅ MQTT You're connected to broker: 192.168._.___:1883
+board ID = "Feather"
+loop(): MQTT message send interval = 1 minute
+🕒 ===>>> Update from NTP Server
+✅ NTP Unix time (UTC) = 1752349208
+setRTCFromEpoch(): Epoch time received: 1752349208
+setRTCFromEpoch(): 19:40:08 UTC
+setRTCFromEpoch(): timeinfo->tm_year = 125
+setRTCFromEpoch(): Saturday, 2025-07-12
+-------------------------------------------------------
+getUnixTimeFromRTC(): HoursLocal = 20
+Bytes written by composePayload(): 253
+Topic: "sensors/Feath/ambient"
+Topic length: 21
+Payload length: 253
+MQTT message ID: 1752352808 = 2025-07-12T20:40:08+01:00
+MQTT message group:   1 sent
+-------------------------------------------------------
+
+[...]
+
+getUnixTimeFromRTC(): HoursLocal = 22                              <<<=== still 22 hours
+Bytes written by composePayload(): 253
+Topic: "sensors/Feath/ambient"
+Topic length: 21
+Payload length: 253
+MQTT message ID: 1752361160 = 2025-07-12T22:59:20+01:00
+MQTT message group: 126 sent
+-------------------------------------------------------
+getUnixTimeFromRTC(): HoursLocal = 23                              <<<=== now 23 hours
+Bytes written by composePayload(): 253
+Topic: "sensors/Feath/ambient"
+Topic length: 21
+Payload length: 253
+MQTT message ID: 1752361221 = 2025-07-12T23:00:21+01:00
+MQTT message group: 127 sent
+-------------------------------------------------------
+
+
+MQTT message ID: 1752361221 = 2025-07-12T23:00:21+01:00
+MQTT message group: 127 sent
+-------------------------------------------------------
+Good night! 🌙                                                    <<<=== bedtime for the display !
+Display go off
+Send msg
+continues!
+See you tomorrow!
+getUnixTimeFromRTC(): HoursLocal = 23                              <<<=== the Feather continues to send mqtt messages
+Bytes written by composePayload(): 253
+Topic: "sensors/Feath/ambient"
+Topic length: 21
+Payload length: 253
+MQTT message ID: 1752361281 = 2025-07-12T23:01:21+01:00
+MQTT message group: 128 sent
+-------------------------------------------------------
+getUnixTimeFromRTC(): HoursLocal = 23
+Bytes written by composePayload(): 253
+Topic: "sensors/Feath/ambient"
+Topic length: 21
+Payload length: 253
+MQTT message ID: 1752361341 = 2025-07-12T23:02:21+01:00
+MQTT message group: 129 sent
+-------------------------------------------------------
+getUnixTimeFromRTC(): HoursLocal = 23
+Bytes written by composePayload(): 253
+Topic: "sensors/Feath/ambient"
+Topic length: 21
+Payload length: 253
+MQTT message ID: 1752361401 = 2025-07-12T23:03:21+01:00
+MQTT message group: 130 sent
+-------------------------------------------------------
+[...]
+

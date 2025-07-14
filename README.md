@@ -97,7 +97,7 @@ Here is an example of the contents of a MQTT message my MQTT Publisher device se
 
 # MQTT Publisher (other functionalities)
 
-The Arduino sketch for the MQTT Publisher (Adafruit ESP32-S3 TFT board) has a functionality to set the display to "sleep" at a time defined in the file ```secrets.h```. In this moment 23h. And a "wakeup" time. In this moment 8h. See in the file secrets.h: 
+To build and upload the Arduino sketch for the MQTT Publisher device I used the Arduino IDE v2.3.5. In the Arduino sketch for the MQTT Publisher (Adafruit ESP32-S3 TFT board) I added functionality to set the display to "sleep" at a time defined in the file ```secrets.h```. In this moment 23h. And a "wakeup" time. In this moment 8h. See in the file secrets.h: 
 ```
 #define SECRET_DISPLAY_SLEEPTIME "23"  // Feather display going to sleep (black) time
 #define SECRET_DISPLAY_AWAKETIME "8"   // Feather display wakeup time

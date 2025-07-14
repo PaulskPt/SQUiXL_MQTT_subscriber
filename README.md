@@ -11,7 +11,26 @@ For a successful MQTT communication you need:
 
 How to install?
 
-Download the latest version of Unexpected Maker [SQUiXL DevOS](https://github.com/UnexpectedMaker/SQUiXL-DevOS). Install that repo on your PC in a folder of your preference. Copy the files of this repo from the subfolders [here](https://github.com/PaulskPt/SQUiXL_MQTT_subscriber/tree/main/src/Subscriber/SQUiXL-DevOS_A07) to the same subfolders where you installed the Unexpected Maker SQUiXL DevOS firmware source files. You need to have installed on your PC: Microsoft Visual Studio Code (VSCode) and the PlatformIO extension. The first time I downloaded the sources of the UM SQUiXL DevOS firmware, it built and uploaded, inside VSCode + PlatformIO, to my SQUiXL without problem. Yes, during the build phase there were various warnings of duplicate defined variables, however these warnings did not stall the build process.
+Download the latest version of Unexpected Maker [SQUiXL DevOS](https://github.com/UnexpectedMaker/SQUiXL-DevOS). Install that repo on your PC in a folder of your preference. Copy the files of this repo from the subfolders [here](https://github.com/PaulskPt/SQUiXL_MQTT_subscriber/tree/main/src/Subscriber/SQUiXL-DevOS_A07) to the the following (sub)folders of the PlatformIO project folder structure:
+```
+         platformio
+             .pio
+             .vscode
+             > lib
+             > src
+               > mqtt
+                   mqtt.h
+                   mqtt.cpp
+               > ui
+                   ui_scrollarea.cpp
+               squixl.h
+            platform.ini
+```
+
+
+
+
+You need to have installed on your PC: Microsoft Visual Studio Code (VSCode) and the PlatformIO extension. The first time I downloaded the sources of the UM SQUiXL DevOS firmware, it built and uploaded, inside VSCode + PlatformIO, to my SQUiXL without problem. Yes, during the build phase there were various warnings of duplicate defined variables, however these warnings did not stall the build process.
 
 What files do my changes to the SQUiXL DevOS firmware sources contain?
 

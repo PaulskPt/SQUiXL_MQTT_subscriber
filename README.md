@@ -106,6 +106,8 @@ During the "sleep" hours, the MQTT Publisher device continues to send MQTT messa
 
 In case the Arduino sketch of the Publisher device encounters that it cannot read the values from the BME280 sensor, the sketch will issue a software reset by calling the function ```reset()``` which calls the function ```ESP.restart()```.
 
+The source of the Arduino sketch for the MQTT Publisher device is [here](https://github.com/PaulskPt/SQUiXL_MQTT_subscriber/tree/main/src/Publisher)
+
 # File secrets.h (for the MQTT Publisher device)
 
 To have the Publisher device be able to connect to the internet, to get, at intervals, a Unixtime datetime stamp from an NTP server, you have to fill-in the WiFi SSID and PASSWORD. Further you can change the following settings in the file secrets.h:

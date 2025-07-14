@@ -2,6 +2,8 @@
 
 by Paulus Schulinck (Github handle: @PaulskPt)
 
+If you do not know what is the MQTT communication protocol see: [MQTT](https://en.wikipedia.org/wiki/MQTT).
+
 For a successful MQTT communication you need: 
 - a MQTT Publisher device. In my case: an Adafruit Feather ESP32-S3 TFT board;
 - a MQTT Broker device. This can be an online broker or a Broker device in your Local Area Network (LAN). I prefered the latter. In my case: a Raspberry Pi Compute Module 5.

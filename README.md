@@ -119,13 +119,23 @@ To have the Publisher device be able to connect to the internet, to get, at inte
 #define SECRET_DISPLAY_AWAKETIME "8"   // Feather display wakeup time
 ```
 
-# The broker
+# MQTT broker
 
 If you, like me, also use a Raspberry Pi model to host a Mosquitto broker application, see the files in ```/etc```
 - ```/etc/hosts.allow``` : insert in this file the ip-addres of your mosquitto broker. In my case: ```mosquitto: 127.0.0.1```
 - ```/etc/mosquitto/mosquitto.conf```. See the contents of the mosquitto.conf file that I use in the folder: ```SQUiXL_MQTT_subscriber/src/Broker/etc/mosquitto```.
 
 See also photos of sites where to download the mosquitto broker app for Raspberry Pi or for a MS Windows PC in the folder. ```SQUiXL_MQTT_subscriber/src/Broker```.
+
+# MQTT Subscriber 
+
+Note that in the file ```/SQUiXL_MQTT_subscriber/src/Subscriber/SQUiXL-DevOS_A07/platformio/src/mqtt/mqtt.h``` I added the following C++ preprocessor directive:
+```
+#ifndef USE_PAULSKPT_PARTS
+#define USE_PAULSKPT_PARTS   (1)  // use
+#endif
+```
+This directive results in selected parts of my code changes being used instead of similar UM SQUiXL DevOS firmware parts.
 
 
 # Hardware used:

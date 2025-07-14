@@ -24,6 +24,7 @@ Download the latest version of Unexpected Maker [SQUiXL DevOS](https://github.co
                > ui
                    ui_scrollarea.cpp
                squixl.h
+               squixl.cpp
             platform.ini
 ```
 

@@ -1,6 +1,6 @@
 # Receiving and displaying MQTT messages on an Unexpected Maker SQUiXL device
 
-# by Paulus Schulinck (Github handle: @PaulskPt)
+by Paulus Schulinck (Github handle: @PaulskPt)
 
 For a successful MQTT communication you need: 
 - a MQTT Publisher device. In my case: an Adafruit Feather ESP32-S3 TFT board;

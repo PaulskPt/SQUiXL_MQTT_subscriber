@@ -36,7 +36,7 @@ Listen: "sensors/Feath/ambient". (or the topic text of your choice)
 
 # MQTT message content
 
-In the firmware for the Unexpected Maker SQUiXL device, in the file ```src/mqtt/mqtt.h``` is defined a structure of which most of the items are used in the MQTT message.
+In the firmware for the Unexpected Maker SQUiXL device, in the file ```src/mqtt/mqtt.h``` is defined a structure of which most of the items are used in the MQTT messages that my MQTT Publisher sends.
 
 ```
 struct MQTT_Payload

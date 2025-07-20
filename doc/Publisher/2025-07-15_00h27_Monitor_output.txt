@@ -1,0 +1,34 @@
+Tuesday 2025-07-15 00h27 utc +1
+Board: Adafruit Feather ESP32-S3 TFT
+IDE: Arduino v2.4.6
+Sketch: Feather_ESP2-S3_TFT_MQTT_test_for_SQUiXL_one_msg_only.ino 
+
+Serial Monitor output:
+
+
+[...]  ( Note @PaulskPt: the display is "asleep")
+
+etUnixTimeFromRTC(): HoursLocal = 0
+Bytes written by composePayload(): 251
+Topic: "sensors/Feath/ambient"
+Topic length: 21
+Payload length: 251
+MQTT message ID: 1752539167 = 2025-07-15T00:26:07+01:00
+MQTT message group: 480 sent
+-------------------------------------------------------
+🕒 ===>>> ✅ NTP Unix time (UTC) = 1752535625            <<<=== even the display is "asleep" the RTC is synced with NTP
+setRTCFromEpoch(): Epoch time received: 1752535625
+setRTCFromEpoch(): 23:27:05 UTC
+setRTCFromEpoch(): timeinfo->tm_year = 125
+setRTCFromEpoch(): Monday, 2025-07-14
+-------------------------------------------------------
+getUnixTimeFromRTC(): HoursLocal = 0
+Bytes written by composePayload(): 253
+Topic: "sensors/Feath/ambient"
+Topic length: 21
+Payload length: 253
+MQTT message ID: 1752539226 = 2025-07-15T00:27:06+01:00
+MQTT message group: 481 sent
+
+[...]
+

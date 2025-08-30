@@ -190,11 +190,16 @@ My advise for the Publisher device: the Adafruit Feather ESP32-S3 TFT (and proba
 
 ## Update 2025-08-30 - Added changed version of SQUiXL-DevOS A06 Release 3
 
-Changes and additions created to receive, interprete and display MQTT messages from two MQTT Publishers in the "MQTT Messages" screen.
-In this release a lot of the variables are moved to psram. To my experience this had a tremendous improvement during execution of the firmware.
-A lot of WiFi errors became history. Also the RSS FEEDS and JOKES Widgets now load instantaneously. 
+### Added hardware:
+- Pimoroni Pico LiPo 2XL W [info](https://shop.pimoroni.com/products/pimoroni-pico-lipo-2-xl-w?variant=55447911006587), in the role of MQTT Publisher2.
 
-Files changed: 
+### Changes to the SQUiXL-DevOS firmware:
+
+Changes and additions created to receive, interprete and display MQTT messages from two MQTT Publishers in the "MQTT Messages" screen.
+In this release Seon (UM) moved variables to psram. I followed this change. To my experience this change resulted in a tremendous improvement during execution of the firmware.
+On my SQUiXL all the (many) WiFi errors became history. Also the RSS FEEDS and JOKES Widgets now load instantaneously. 
+
+Files changed by me:
 ```
 /src/squixl.cpp (in function: process_backlight_dimmer() to not dim the backlight while on 5V power)
 /src/mqtt/mqtt.h

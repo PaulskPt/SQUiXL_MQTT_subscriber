@@ -202,12 +202,15 @@ On my SQUiXL all the (many) WiFi errors became history. Also the RSS FEEDS and J
 Files changed by me:
 ```
 /src/squixl.cpp (in function: process_backlight_dimmer() to not dim the backlight while on 5V power)
+/src/settings/settingsOption.h  (added definition: #define USE_PAULSKPT_PARTS)
 /src/mqtt/mqtt.h
 /src/mqtt/mqtt.cpp
 /src/ui/scrollarea.cpp
 ```
 Files created and added by me:
 ```
+/src/metar/metar_data.h
+/drc/metar/metar_data.cpp
 /src/utils/RtcFormatter.h (used in mqtt.cpp)
 /src/utils/RtcFormatter.cpp
 ```

@@ -8,6 +8,8 @@
 #ifdef USE_PAULSKPT_PARTS
 #include <vector>        // same
 #include <string>        // same
+#include "metar/metar_data.h"
+
 #endif
 
 class ui_gauge;
@@ -104,7 +106,7 @@ class MQTT_Stuff
     void mqtt_clean_map_if_needed(MapType& mqtt_topic_payloads);
 
 		//std::map<std::string, std::vector<MQTT_Payload>> mqtt_topic_payloads;
-    std::string mqtt_split_and_join(std::string msg);
+		METAR mqtt_split_metar(const std::string& msg);
 		void mqtt_reconnect();
 		void mqtt_callback(char *topic, byte *message, unsigned int length);
 		void process_mqtt();

@@ -20,7 +20,10 @@ NLOHMANN_DEFINE_TYPE_NON_INTRUSIVE_WITH_DEFAULT(MQTT_Payload, owner, device_clas
 WiFiClient espClientMQTT;
 PubSubClient mqtt_client(espClientMQTT);
 
+// Defined in settingsOption.h
 #ifdef USE_PAULSKPT_PARTS
+
+//METAR metar_data;
 
 const size_t MAX_TOTAL_PAYLOADS = 1;
 
@@ -35,36 +38,49 @@ void MQTT_Stuff::mqtt_clean_map_if_needed(MapType& mqtt_topic_payloads) {
     }
 }
 
-std::string MQTT_Stuff::mqtt_split_and_join(std::string msg) {
-	// Example msg: "METAR LPPT 280030Z 31005KT 280V340 9999 FEW016 SCT030 20/17 Q1016"
-	std::istringstream iss(msg);
-	std::vector<std::string> tokens;
-	std::string token;
+METAR MQTT_Stuff::mqtt_split_metar(const std::string& msg) {
+    std::istringstream iss(msg);
+    std::vector<std::string> tokens;
+    std::string token;
 
-	// Split the METAR into individual tokens
-	while (iss >> token) {
-			tokens.push_back(token);
-	}
+    // Split the METAR into individual tokens
+    while (iss >> token) {
+        tokens.push_back(token);
+    }
 
-	// Group tokens into three sections
-	std::string section1, section2, section3;
-	for (size_t i = 0; i < tokens.size(); ++i) {
-			if (i < 3)
-					section1 += tokens[i] + " ";
-			else if (i < 7)
-					section2 += tokens[i] + " ";
-			else
-					section3 += tokens[i] + " ";
-	}
+    METAR metar;
 
-	// Trim trailing spaces and join with '\n'
-	section1.pop_back();
-	section2.pop_back();
-	section3.pop_back();
+    // Group tokens into three sections
+    for (size_t i = 0; i < tokens.size(); ++i) {
+        if (i < 3)
+            metar.section1 += tokens[i] + " ";
+        else if (i < 7)
+            metar.section2 += tokens[i] + " ";
+        else
+            metar.section3 += tokens[i] + " ";
+    }
 
-	std::string result = section1 + "\n " + section2 + "\n " + section3;
-	std::cout << result << std::endl;
-	return result;
+    // Trim trailing spaces
+    if (!metar.section1.empty()) metar.section1.pop_back();
+    if (!metar.section2.empty()) metar.section2.pop_back();
+    if (!metar.section3.empty()) metar.section3.pop_back();
+
+#ifdef MY_DEBUG
+		Serial.println(F("mqtt_split_metar(): "));
+		Serial.print(F("parameter: msg = "));
+		Serial.println(msg.c_str());
+		Serial.print(F("metar.section1 = \""));
+		Serial.print(metar.section1.c_str());
+		Serial.println("\"");
+		Serial.print(F("metar.section2 = \""));
+		Serial.print(metar.section2.c_str());
+		Serial.println("\"");
+		Serial.print(F("metar.section3 = \""));
+		Serial.print(metar.section3.c_str());
+		Serial.println("\"");
+#endif
+
+    return metar;
 }
 
 #endif
@@ -166,7 +182,7 @@ void MQTT_Stuff::mqtt_callback(char *topic, byte *message, unsigned int length)
 							int timestampLocalNew = timestampLocalOriginal + utc_offset_seconds;
 							psram_string timestampStrLocalNew = rtc.unix_timestamp_to_time_str(timestampLocalNew);
 							psram_string timestampStr = RtcFormatter::format_datetime(timestampLocalNew, true);
-#ifndef MY_DEBUG
+#ifdef MY_DEBUG
 							Serial.print(F("mqtt_callback(): "));
 							Serial.print(F("utc_offset_seconds = "));
 							Serial.println(utc_offset_seconds);
@@ -336,19 +352,22 @@ void MQTT_Stuff::mqtt_callback(char *topic, byte *message, unsigned int length)
 		{
 			// Handle weather/PL2XLW/LPPT
 			JsonObject metar = doc["metar"];
-#ifndef MY_DEBUG
+#ifdef MY_DEBUG
 			Serial.print(F("metar = "));  // for test do a print to show what is received
 #endif
-			std::string metar_data = metar["raw"] | ""; 
-			Serial.println(metar_data.c_str());  // for test do a print to show what is received
-
+			std::string metarDataStr = metar["raw"] | "";
+#ifdef MY_DEBUG
+			Serial.println(metarDataStr.c_str());  // for test do a print to show what is received
+#endif
 			// MQTT_Payload payload; 
 			// msg = b'{"metar": {"raw": "METAR LPPT 262200Z 34014KT 310V010 CAVOK 19/15 Q1014"}, \
 			// "hd": {"de": "Ext", "sc": "meas", "vt": "s", "t": 1756245600, "dc": "wx", "ow": "PL2XLW"}}'
 
-			metar_data = mqtt_split_and_join(metar_data);
+			metar_data = mqtt_split_metar(metarDataStr);
 
-			payload.sensor_value = metar_data;
+			// In ui_scrollarea.cpp we are going to access metar_data directly through the struct
+			
+			payload.sensor_value = "";  // just for the sake of the program flow: give it an empty value
 
 			mqtt_dirty = false;
 
@@ -362,12 +381,16 @@ void MQTT_Stuff::mqtt_callback(char *topic, byte *message, unsigned int length)
 					Serial.printf("%s\n", payload.owner.c_str());
 
 					Serial.print(F("MQTT: Added metar data from "));
-					Serial.printf("%s, loc: %s, dev: %s at: %s\nmsg: %s\n",
+					Serial.printf("%s, loc: %s, dev: %s at: %s\n",
 							payload.owner.c_str(),
 							payload.description.c_str(),
 							payload.device_class.c_str(),
-							payload.timestampStr.c_str(),
-							payload.sensor_value.c_str());
+							payload.timestampStr.c_str());
+							//payload.sensor_value.c_str());
+					Serial.printf("msg: %s\n%s\n%s\n",
+						metar_data.section1.c_str(),
+						metar_data.section2.c_str(),
+						metar_data.section3.c_str());
 
 					mqtt_dirty = true;
 			}
@@ -392,13 +415,17 @@ void MQTT_Stuff::mqtt_callback(char *topic, byte *message, unsigned int length)
 						payload.timestampStr = psram_string(timestampStr); // if needed
 
 						Serial.print(F("MQTT: Updated metar data, from "));
-						Serial.printf("%s, loc: %s, dev: %s at: %s\nmsg: %s\n",
+						Serial.printf("%s, loc: %s, dev: %s at: %s\n",
 								payload.owner.c_str(),
 								payload.description.c_str(),
 								payload.device_class.c_str(),
-								payload.timestampStr.c_str(),
-								payload.sensor_value.c_str());
-
+								payload.timestampStr.c_str());
+								//payload.sensor_value.c_str());
+						Serial.printf("msg: %s\n%s\n%s\n",
+							metar_data.section1.c_str(),
+							metar_data.section2.c_str(),
+							metar_data.section3.c_str());
+						
 						mqtt_dirty = true;
 						updated = true;
 						break;
@@ -415,14 +442,20 @@ void MQTT_Stuff::mqtt_callback(char *topic, byte *message, unsigned int length)
               << mqtt_topic_payloads.size() << "\n";
 #endif
 					Serial.print(F("\nMQTT: Added new metar data, msgID "));
-					Serial.printf("%s from %s, loc: %s, dev: %s at: %s\nmsg: %s\nNow has %d metar data sets\n",
-					payload.msgID.c_str(),
-					payload.owner.c_str(),
-					payload.description.c_str(),
-					payload.device_class.c_str(),
-					payload.timestampStr.c_str(),
-					payload.sensor_value.c_str(),
-					mqtt_topic_payloads[ownerKey].size());
+					//Serial.printf("%s from %s, loc: %s, dev: %s at: %s\nmsg: %s\nNow has %d metar data sets\n",
+					Serial.printf("%s from %s, loc: %s, dev: %s at: %s\n",
+						payload.msgID.c_str(),
+						payload.owner.c_str(),
+						payload.description.c_str(),
+						payload.device_class.c_str(),
+						payload.timestampStr.c_str());
+						//payload.sensor_value.c_str(),
+					Serial.printf("msg: %s\n%s\n%s\n",
+						metar_data.section1.c_str(),
+						metar_data.section2.c_str(),
+						metar_data.section3.c_str());
+					Serial.printf("Now has %d metar data sets\n",
+						mqtt_topic_payloads[ownerKey].size());
 
 					delay(100);
 					mqtt_dirty = true;

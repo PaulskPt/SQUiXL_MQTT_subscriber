@@ -2,6 +2,11 @@
 #include "ui/ui_screen.h"
 #include "mqtt/mqtt.h"
 
+// Defined in settingsOption.h
+#ifdef USE_PAULSKPT_PARTS
+  // ToDo
+#endif
+
 void ui_scrollarea::create(int16_t x, int16_t y, int16_t w, int16_t h, const char *title, uint16_t color)
 {
 	_x = x;
@@ -173,19 +178,39 @@ bool ui_scrollarea::redraw(uint8_t fade_amount, int8_t tab_group)
 				const auto& reading = sensor_data.second[s];
 
 				std::ostringstream oss;
-
+				std::string data;
+				
 				if (sensor_data.second[0].owner == "Feath" ||
-			  sensor_data.second[0].owner == "Feather") {
+			  	sensor_data.second[0].owner == "Feather") {
 					
 					oss << std::left  << std::setw(term_width) << reading.term.c_str()
 							<< std::right << std::fixed << std::setw(6) << std::setprecision(1)
 							<< reading.sensor_value
 							<< " " << reading.unit_of_measurement << std::endl;
+					data = oss.str();
+
+					_sprite_content.setCursor(10, _scroll_y + line_y);
+					_sprite_content.print(data.c_str());
+
+					line_y += y_inc;
+					content_height += y_inc;  // Still needed for layout
 				}
 				else if (sensor_data.second[0].owner == "PL2XLW") {
 					oss << std::left << reading.sensor_value;
+					data = reading.sensor_value;
+					_sprite_content.setCursor(_scroll_h, _scroll_y + line_y);
+					//_sprite_content.print(data.c_str());
+					_sprite_content.print(metar_data.section1.c_str());
+					line_y += y_inc;
+					_sprite_content.setCursor(_scroll_h, _scroll_y + line_y);
+					_sprite_content.print(metar_data.section2.c_str());
+					line_y += y_inc;
+					_sprite_content.setCursor(_scroll_h, _scroll_y + line_y);
+					_sprite_content.print(metar_data.section3.c_str());	
+					line_y += y_inc;
+					content_height += 3 * y_inc;  // Still needed for layout
 				}
-				std::string data = oss.str();
+			
 #ifdef MY_DEBUG
 				Serial.print(F("data length = "));
 				Serial.println(data.size());
@@ -194,11 +219,6 @@ bool ui_scrollarea::redraw(uint8_t fade_amount, int8_t tab_group)
 				Serial.println("\"");
 				Serial.printf("_scroll_y + line_y: %d + %d\n", _scroll_y, line_y);
 #endif
-				_sprite_content.setCursor(_scroll_h, _scroll_y + line_y);
-				_sprite_content.print(data.c_str());
-
-				line_y += y_inc;
-				content_height += y_inc;  // Still needed for layout
 			}
 		}
 		content_height = _h - 5;  // Added by @PaulskPt TEST to prevent add onscreen second or third received data
@@ -208,7 +228,10 @@ bool ui_scrollarea::redraw(uint8_t fade_amount, int8_t tab_group)
 		{
 			for (int s = 0; s < sensor_data.second.size(); s++)
 			{
-				psram_string data = sensor_data.second[s].description + " " + sensor_data.second[s].device_class + " " + sensor_data.second[s].sensor_value + sensor_data.second[s].unit_of_measurement;
+				psram_string data = sensor_data.second[s].description + " " + 
+					sensor_data.second[s].device_class + " " + 
+					sensor_data.second[s].sensor_value + 
+					sensor_data.second[s].unit_of_measurement;
 				_sprite_content.setCursor(_scroll_h, _scroll_y + line_y);
 				_sprite_content.print(data.c_str());
 				line_y += 18;

@@ -6,6 +6,11 @@
 // #include "themes.h"
 #include <vector>
 
+/* ----------- 2025-08-30 added by @PaulskPt ----------*/
+#ifndef USE_PAULSKPT_PARTS
+#define USE_PAULSKPT_PARTS   (1)  // for now: do not use 
+#endif
+/* ----------------------------------------------------*/
 struct wifi_station;
 struct mqtt_topic;
 

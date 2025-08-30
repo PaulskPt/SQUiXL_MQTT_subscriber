@@ -4,6 +4,11 @@
 #include "ui/ui_element.h"
 #include <string>
 
+// Defined in settingsOption.h
+#ifdef USE_PAULSKPT_PARTS
+#include "metar/metar_data.h"
+#endif
+
 class ui_scrollarea : public ui_element
 {
 	public:
@@ -48,5 +53,9 @@ class ui_scrollarea : public ui_element
 		BB_SPI_LCD _sprite_left;
 		BB_SPI_LCD _sprite_right;
 
-		void calculate_alignment();
+		// Note @PaulskPt: not used in ui_scrollarea.cpp
+		void calculate_alignment() {
+      // TODO: implement alignment logic
+    }
+
 };

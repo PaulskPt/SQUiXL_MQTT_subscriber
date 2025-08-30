@@ -196,7 +196,7 @@ My advise for the Publisher device: the Adafruit Feather ESP32-S3 TFT (and proba
 ### Changes to the SQUiXL-DevOS firmware:
 
 Changes and additions created to receive, interprete and display MQTT messages from two MQTT Publishers in the "MQTT Messages" screen.
-In this release Seon (UM) moved variables to psram. I followed this change. To my experience this change resulted in a tremendous improvement during execution of the firmware.
+In this SQUiXL-DevOS A06 Release 3, Seon (UM) moved variables to psram. I followed this change. To my experience this change resulted in a tremendous improvement during execution of the firmware.
 On my SQUiXL all the (many) WiFi errors became history. Also the RSS FEEDS and JOKES Widgets now load instantaneously. 
 
 Files changed by me:

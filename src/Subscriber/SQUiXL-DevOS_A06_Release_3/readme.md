@@ -14,21 +14,6 @@ We should remedy that right away... Head over to https://squixl.io and order you
 # License
 All code provided here by Unecpedted Maker falls under the MIT License.
 
-
-## Changes by Paulus Schulinck (Github handle: @PaulskPt):
-Changes and additions created to receive, interprete and display MQTT messages from two MQTT Publishers in the "MQTT Messages" screen.
-Files changed:
-/src/squixl.cpp   (in function: process_backlight_dimmer() to not dim the backlight while on 5V power)
-/src/mqtt/mqtt.h
-/src/mqtt/mqtt.cpp
-/src/ui/scrollarea.cpp
-
-## Additions by Paulus Schulinck
-/src/utils/RtcFormatter.h   (used in mqtt.cpp)
-/src/utils/RtcFormatter.cpp
-
-See: [photos](https://imgur.com/a/ARvUNSK)
-
 ## SQUiXL GPIO Table
 
 Below are lists of GPIO used on SQUiXL that iclude native ESP32-S3 IO, IO Expander IO and IOMUX IO.

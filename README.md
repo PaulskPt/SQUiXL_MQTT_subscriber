@@ -102,7 +102,9 @@ I had a problem when using a Pimoroni Presto device as Subscriber device, which 
 I discovered that MQTT messages received were truncated. Initially my MQTT Publisher device sent messages with full names of the structure shown above, which made the payload longer than 256 bytes. That is why I decided to abbreviate the names. I managed to reduce the payload length to less than 256 bytes. Since then the MQTT messages sent by the MQTT Publisher device were received complete.
 
 Update 2025-09-07: 
+
 The truncation problems are solved by doubling the MQTT Payload buffers from 256 to 512 bytes, both in the Publisher as in the Subscriber software.
+
 In the sketch of the Publisher I added: 
 ```
 42 #define TX_PAYLOAD_BUFFER_SIZE 512  // This line needs to be above the line "#include <ArduinoMqttClient.h>")

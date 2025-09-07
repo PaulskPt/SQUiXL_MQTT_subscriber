@@ -14,16 +14,31 @@ How to install?
 Download the latest version of Unexpected Maker [SQUiXL DevOS](https://github.com/UnexpectedMaker/SQUiXL-DevOS). Install that repo in your PC in a folder of your preference. Copy the files of this repo from the subfolders [here](https://github.com/PaulskPt/SQUiXL_MQTT_subscriber/tree/main/src/Subscriber/SQUiXL-DevOS_A06_Release_3) to the the following (sub)folders of the PlatformIO project folder structure:
 ```
          platformio
-             .pio
+             > .pio
+               > squixl
+                 > PubSubClient
+                   > src
+                     PubSubClient.cpp
              .vscode
              > data
              > lib
              > src
+               > metar
+                  metar_data.h
+                  metar_data.cpp
                > mqtt
                    mqtt.h
                    mqtt.cpp
+               > settings
+                 settingsOption.h
                > ui
                    ui_scrollarea.cpp
+               > utils
+                   isDst.h
+                   isDst.cpp
+                   RtcFormatter.h
+                   RtcFormatter.cpp
+               main.cpp
                squixl.h
                squixl.cpp
             platform.ini

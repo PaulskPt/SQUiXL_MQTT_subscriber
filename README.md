@@ -204,6 +204,96 @@ My advise for the Publisher device: the Adafruit Feather ESP32-S3 TFT (and proba
 
 ## Update 2025-08-30 - Added changed version of SQUiXL-DevOS A06 Release 3
 
+## Update 2025-09-07 - Added daylight saving time (dst) awareness into the project. 
+
+The Subscriber uses the unixTime stamp of the received MQTT message. Then this unixTime is used to compare it with the dst_start and dst_end times of the year for the region/city that you have set in the SQUiXL Web Portal configuration (country code, city). 
+The json file for Europe/Lisbon has the following contents:
+```
+  "region" : {
+    "Europe/Lisbon": {
+      "dst_start_end" : {
+        "2025": [1741503600, 1762063200],
+        "2026": [1772953200, 1793512800],
+        "2027": [1805007600, 1825567200],
+        "2028": [1836457200, 1857016800],
+        "2029": [1867906800, 1888466400]
+      },
+      "dst": {
+        "utc_offset_dst": 1,
+        "tz_abbr_dst": "WEST"
+      },
+      "std": {
+        "utc_offset_std": 0,
+        "tz_abbr_std": "WET"
+      }
+    }
+  }
+}
+```
+To not use too much of memory space from the filesystem the json file has only the dst_start and dst_end unix datetime stamps for five years.
+Note that this json file needs to be in a folder named /data. The command to upload the contents of the /data folder (typically used for SPIFFS or LittleFS) to the filesystem of the SQUiXL, from within a VSCode Terminal window is: 
+```
+pio run --target uploadfs
+```
+ATTENTION: What this command does:
+```
+It compiles your project (if needed)
+Then it uploads the contents of /data to the file system partition of your device
+Useful for storing config files, web assets, logs, or anything your firmware reads from flash
+```
+Be aware that the result of such an upload is that the SQUiXL resets itself to a clean state. You have to setup WiFi again, set again your API KEY for the OpenWeather Widget and maybe update settings items using the SQUiXL Web Portal interface.
+
+TIPS: 
+
+ 1. If you want th SQUiXL to print to the Terminal a list of file(s) that are uploaded to the filesystem of the SQUIXL, make the following changes in file: "src/settings/settingsOption.h" : 
+```
+#ifdef  SHOW_FILES_OF_FILESYSTEM // See utils/isDST.cpp - do not use for now
+#undef  SHOW_FILES_OF_FILESYSTEM   
+#endif
+```
+Change this into:
+```
+#ifndef  SHOW_FILES_OF_FILESYSTEM
+#define  SHOW_FILES_OF_FILESYSTEM   
+#endif
+```
+
+2. If you do not want to use the dst awarenes, make the followiong changes in file: "src/settings/settingsOption.h":
+```
+#ifndef USE_DST
+#define USE_DST
+#endif
+```
+Change this into:
+```
+#ifdef USE_DST
+#undef USE_DST  // Do not use for mow
+#endif
+```
+
+3. If you use dst awareness (default) then set the region of your choice in file "src/utils/isDst.h".
+```
+#define REGION_EUROPE
+// #define REGION_USA
+```
+In this moment there are only two regions/cities pre-programmed:
+- EUROPE/LISBON;
+- USA/NEW_YORK
+Default is set for EUROPE/LISBON. Only the EU_LISBON_dst_table.json file I have uploaded to my SQUiXL.
+If you want to change for USA/NEW_YORK, take care that you upload /data/USA_NY_dst_table.json to the filesystem of the SQUiXL.
+I advise you to upload only one ...dst_table.json file to the filesystem of the SQUiXL. (Check that only one ...dst_table.json file is in folder /data.
+
+In file "/src/utils/isDst.cpp there are these line of code regarding the dst region/city:
+```
+#ifdef REGION_EUROPE
+  psram_string fn = "/EU_LISBON_dst_table.json";
+#endif
+
+#ifdef REGION_USA
+  psram_string fn = "/US_NEW_YORK_dst_table.json";
+#endif
+```
+
 ### Added hardware:
 - Pimoroni Pico LiPo 2XL W [info](https://shop.pimoroni.com/products/pimoroni-pico-lipo-2-xl-w?variant=55447911006587), in the role of MQTT Publisher2.
 
@@ -215,16 +305,21 @@ On my SQUiXL all the (many) WiFi errors became history. Also the RSS FEEDS and J
 
 Files changed by me:
 ```
+/.pio/libdebs/squixl/PubSubClient/src/PubSubClient.cpp     (add print statements to show the MQTT_MAX_PACKET_SIZE value
 /src/squixl.cpp (in function: process_backlight_dimmer() to not dim the backlight while on 5V power)
-/src/settings/settingsOption.h  (added definition: #define USE_PAULSKPT_PARTS)
+/src/settings/settingsOption.h  (added definitions: #define USE_PAULSKPT_PARTS, #define USE_DST and #define SHOW_FILES_OF_FILESYSTEM)
 /src/mqtt/mqtt.h
 /src/mqtt/mqtt.cpp
 /src/ui/scrollarea.cpp
 ```
 Files created and added by me:
 ```
+/data/EU_LISBON_dst_table.json        (the idea is to only upload one of the two, or one you create yourself for your region/city)
+/data/USA_NY_dst_table.json
 /src/metar/metar_data.h
 /src/metar/metar_data.cpp
+/src/utils/isDst.h
+/src/utils/isDst.cpp
 /src/utils/RtcFormatter.h (used in mqtt.cpp)
 /src/utils/RtcFormatter.cpp
 ```

@@ -11,6 +11,9 @@
 
 #ifdef USE_DST
 
+#define REGION_EUROPE
+// #define REGION_USA
+
 struct DSTInfo {
   bool is_dst;
   int utc_offset;

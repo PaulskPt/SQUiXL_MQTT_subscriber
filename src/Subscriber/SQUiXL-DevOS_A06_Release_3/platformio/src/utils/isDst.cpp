@@ -45,7 +45,14 @@ static constexpr const char txt0[] PROGMEM = "getDSTInfo(): ";
   delay(2000);
 #endif
 
+#ifdef REGION_EUROPE
   psram_string fn = "/EU_LISBON_dst_table.json";
+#endif
+
+#ifdef REGION_USA
+  psram_string fn = "/US_NEW_YORK_dst_table.json";
+#endif
+
   File file = LittleFS.open(fn.c_str(), "r");
   if (!file) {
     Serial.print(txt0);

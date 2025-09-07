@@ -222,7 +222,7 @@ See also photos of sites where to download the mosquitto broker app for Raspberr
 
 # MQTT Subscriber 
 
-Note that in the file ```/SQUiXL_MQTT_subscriber/src/Subscriber/SQUiXL-DevOS_A07/platformio/src/mqtt/mqtt.h``` I added the following C++ preprocessor directive:
+Note that in the file "src/settings/settingsOption.h"  [here](https://github.com/PaulskPt/SQUiXL_MQTT_subscriber/blob/main/src/Subscriber/SQUiXL-DevOS_A06_Release_3/platformio/src/settings/settingsOption.h), I added the following C++ preprocessor directive:
 ```
 #ifndef USE_PAULSKPT_PARTS
 #define USE_PAULSKPT_PARTS   (1)  // use

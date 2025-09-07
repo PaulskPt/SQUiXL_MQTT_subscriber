@@ -11,7 +11,7 @@ For a successful MQTT communication you need:
 
 How to install?
 
-Download the latest version of Unexpected Maker [SQUiXL DevOS](https://github.com/UnexpectedMaker/SQUiXL-DevOS). Install that repo in your PC in a folder of your preference. Copy the files of this repo from the subfolders [here](https://github.com/PaulskPt/SQUiXL_MQTT_subscriber/tree/main/src/Subscriber/SQUiXL-DevOS_A06_Release_3) to the the following (sub)folders of the PlatformIO project folder structure:
+Download the latest version of Unexpected Maker [SQUiXL DevOS](https://github.com/UnexpectedMaker/SQUiXL-DevOS). Install that repo in your PC in a folder of your preference. Copy the files of this repo from the subfolders [here](https://github.com/PaulskPt/SQUiXL_MQTT_subscriber/tree/main/src/Subscriber/SQUiXL-DevOS_A06_Release_3/platformio) to the the following (sub)folders of the PlatformIO project folder structure:
 ```
          platformio
              > .pio

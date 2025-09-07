@@ -21,6 +21,7 @@ Download the latest version of Unexpected Maker [SQUiXL DevOS](https://github.co
                      PubSubClient.cpp
              .vscode
              > data
+                EU_LISBON_dst_table.json
              > lib
              > src
                > metar
@@ -39,8 +40,6 @@ Download the latest version of Unexpected Maker [SQUiXL DevOS](https://github.co
                    RtcFormatter.h
                    RtcFormatter.cpp
                main.cpp
-               squixl.h
-               squixl.cpp
             platform.ini
 ```
 
@@ -51,7 +50,7 @@ You need to have installed on your PC: Microsoft Visual Studio Code (VSCode) and
 
 What files do my changes to the SQUiXL DevOS firmware sources contain?
 
-The files to change the firmware for the MQTT Subscriber device are [here](https://github.com/PaulskPt/SQUiXL_MQTT_subscriber/tree/main/src/Subscriber/SQUiXL-DevOS_A07) This folder and its subfolders only contain files that have been changed by me, @PaulskPt, to make the Unexpected Maker SQUiXL Alpha version of the SQUiXL-DevOS firmware (minimum version: Alpha v0.6), handle and display received MQTT messages in it's ```MQTT Messages``` screen. The folder [here](https://github.com/PaulskPt/SQUiXL_MQTT_subscriber/tree/main/src/Subscriber/SQUiXL-DevOS_A07/platformio/.pio/libdeps/squixl) contains a photo of the libraries that need to be installed. These libraries are referenced in the file ```platformio.ini```. Under normal conditions Platformio will download and install these libraries for you. Only when it cannot find a library, you have to search for it online, download the library, copy it to the folder ```/platformio/pio/libdeps/squixl``` and, when the link to this library not exists in the file [here](https://github.com/PaulskPt/SQUiXL_MQTT_subscriber/blob/main/src/Subscriber/SQUiXL-DevOS_A07/platformio/platformio.ini), copy the link to that library into the file ```platformio.ini```, under ```lib_deps = ```.
+The files to change the firmware for the MQTT Subscriber device are [here](https://github.com/PaulskPt/SQUiXL_MQTT_subscriber/tree/main/src/Subscriber/SQUiXL-DevOS_A06_Release_3/platformio) This folder and its subfolders only contain files that have been changed by me, @PaulskPt, to make the Unexpected Maker SQUiXL Alpha version of the SQUiXL-DevOS firmware (minimum version: Alpha v0.6), handle and display received MQTT messages in it's ```MQTT Messages``` screen. The folder [here](https://github.com/PaulskPt/SQUiXL_MQTT_subscriber/tree/main/src/Subscriber/SQUiXL-DevOS_A06_Release_3/platformio/.pio/libdeps/squixl) contains a photo of the libraries that need to be installed. These libraries are referenced in the file ```platformio.ini```. Under normal conditions Platformio will download and install these libraries for you. Only when it cannot find a library, you have to search for it online, download the library, copy it to the folder ```/platformio/pio/libdeps/squixl``` and, when the link to this library not exists in the file [here](https://github.com/PaulskPt/SQUiXL_MQTT_subscriber/tree/main/src/Subscriber/SQUiXL-DevOS_A06_Release_3/platformio/platformio.ini), copy the link to that library into the file ```platformio.ini```, under ```lib_deps = ```.
 
 Use of the SQUiXL Web Portal:
 
@@ -149,16 +148,49 @@ The source of the Arduino sketch for the MQTT Publisher device is [here](https:/
 To have the Publisher device be able to connect to the internet, to get, at intervals, a Unixtime datetime stamp from an NTP server, you have to fill-in the WiFi SSID and PASSWORD. Further you can change the following settings in the file secrets.h:
 
 ```
-#define SECRET_TIMEZONE_OFFSET "1" // Europe/Lisbon (UTC offset in hours)
-// #define TIMEZONE_OFFSET "-4" // America/New_York
+#define SECRET_SSID "<Your WiFi SSID>"
+#define SECRET_PASS "<Your WiFi PASSWORD>"
+
+#define REGION_EUROPE
+// #define REGION_USA
+
+#ifdef REGION_EUROPE // Europe/Lisbon
+  #define SECRET_TZ_DST_ID "WEST"
+  #define SECRET_TIMEZONE_DST_OFFSET "1"
+  #define SECRET_TZ_STD_ID "WET"
+  #define SECRET_TIMEZONE_STD_OFFSET "0"
+#elif defined(REGION_USA)  // America/New_York
+  #define SECRET_TZ_DST_ID "EDT"
+  #define SECRET_TIMEZONE_DST_OFFSET "-4"
+  #define SECRET_TZ_STD_ID "EST"
+  #define SECRET_TIMEZONE_STD_OFFSET "-5"
+#endif
+
+#define SECRET_USE_BROKER_LOCAL "1"  // We usa a local MQTT broker
 #define SECRET_NTP_SERVER1 "1.pt.pool.ntp.org"
 #define SECRET_MQTT_BROKER "5.196.78.28" // test.mosquitto.org"
-#define SECRET_MQTT_BROKER_LOCAL1 "192.168._.___"  // Your Local mosquitto broker app on PC ____
-#define SECRET_MQTT_BROKER_LOCAL2 "192.168._.___"  // Your Local mosquitto broker app on Raspberry Pi ___ (in my case a RPi CM5)
-#define SECRET_MQTT_PORT "1883" 
-#define SECRET_MQTT_TOPIC "sensors/Feath/ambient"  // Sent by the Publisher device (in my case an Adafruit Feather ESP32-S3 TFT)
-#define SECRET_DISPLAY_SLEEPTIME "23"  // Feather display going to sleep (black) time
-#define SECRET_DISPLAY_AWAKETIME "8"   // Feather display wakeup time
+#define SECRET_MQTT_BROKER_LOCAL1 "192.168._.___"  // Local mosquitto broker app on PC Paul5
+#define SECRET_MQTT_BROKER_LOCAL2 "192.168._._"  // Local mosquitto broker app on RPi CM5
+#define SECRET_MQTT_PORT "1883"
+#define SECRET_MQTT_TOPIC_PREFIX_SENSORS "sensors"
+#define SECRET_MQTT_TOPIC_PREFIX_LIGHTS "lights"
+#define SECRET_MQTT_TOPIC_PREFIX_TODO "todo"
+#define SECRET_MQTT_PUBLISHER "Feath"
+#define SECRET_MQTT_CLIENT_ID "Adafruit_Feather_ESP32S3TFT"
+#define SECRET_MQTT_SYS_TOPIC1 "$SYS/broker/clients/connected"
+#define SECRET_MQTT_SYS_TOPIC2 "$SYS/broker/clients/disconnected"
+#define SECRET_MQTT_TOPIC_SUFFIX_SENSORS "ambient"
+#define SECRET_MQTT_TOPIC_SUFFIX_LIGHTS_TOGGLE "toggle"
+#define SECRET_MQTT_TOPIC_SUFFIX_LIGHTS_COLOR_DECREASE "color_dec"
+#define SECRET_MQTT_TOPIC_SUFFIX_LIGHTS_COLOR_INCREASE "color_inc"
+#define SECRET_MQTT_TOPIC_SUFFIX_LIGHTS_DCLR_DECREASE "dclr_dec"
+#define SECRET_MQTT_TOPIC_SUFFIX_LIGHTS_DCLR_INCREASE "dclr_inc"
+#define SECRET_MQTT_TOPIC_SUFFIX_METAR "metar"
+#define SECRET_MQTT_TOPIC_SUFFIX_TODO "todo"
+#define SECRET_DISPLAY_SLEEPTIME "23"
+#define SECRET_DISPLAY_AWAKETIME "7"
+#define SECRET_METAR_TAF_API_KEY "<Your metar-taf.com API KEY>"
+#define SECRET_METAR_FETCH_LIMIT "5" // Only during tests. A limiter to not to "lose" too many credits
 ```
 
 # MQTT broker
@@ -206,6 +238,96 @@ My advise for the Publisher device: the Adafruit Feather ESP32-S3 TFT (and proba
 
 ## Update 2025-08-30 - Added changed version of SQUiXL-DevOS A06 Release 3
 
+## Update 2025-09-07 - Added daylight saving time (dst) awareness into the project. 
+
+The Subscriber uses the unixTime stamp of the received MQTT message. Then this unixTime is used to compare it with the dst_start and dst_end times of the year for the region/city that you have set in the SQUiXL Web Portal configuration (country code, city). 
+The json file for Europe/Lisbon has the following contents:
+```
+  "region" : {
+    "Europe/Lisbon": {
+      "dst_start_end" : {
+        "2025": [1741503600, 1762063200],
+        "2026": [1772953200, 1793512800],
+        "2027": [1805007600, 1825567200],
+        "2028": [1836457200, 1857016800],
+        "2029": [1867906800, 1888466400]
+      },
+      "dst": {
+        "utc_offset_dst": 1,
+        "tz_abbr_dst": "WEST"
+      },
+      "std": {
+        "utc_offset_std": 0,
+        "tz_abbr_std": "WET"
+      }
+    }
+  }
+}
+```
+To not use too much of memory space from the filesystem the json file has only the dst_start and dst_end unix datetime stamps for five years.
+Note that this json file needs to be in a folder named /data. The command to upload the contents of the /data folder (typically used for SPIFFS or LittleFS) to the filesystem of the SQUiXL, from within a VSCode Terminal window is: 
+```
+pio run --target uploadfs
+```
+ATTENTION: What this command does:
+```
+It compiles your project (if needed)
+Then it uploads the contents of /data to the file system partition of your device
+Useful for storing config files, web assets, logs, or anything your firmware reads from flash
+```
+Be aware that the result of such an upload is that the SQUiXL resets itself to a clean state. You have to setup WiFi again, set again your API KEY for the OpenWeather Widget and maybe update settings items using the SQUiXL Web Portal interface.
+
+TIPS: 
+
+ 1. If you want th SQUiXL to print to the Terminal a list of file(s) that are uploaded to the filesystem of the SQUIXL, make the following changes in file: "src/settings/settingsOption.h" : 
+```
+#ifdef  SHOW_FILES_OF_FILESYSTEM // See utils/isDST.cpp - do not use for now
+#undef  SHOW_FILES_OF_FILESYSTEM   
+#endif
+```
+Change this into:
+```
+#ifndef  SHOW_FILES_OF_FILESYSTEM
+#define  SHOW_FILES_OF_FILESYSTEM   
+#endif
+```
+
+2. If you do not want to use the dst awarenes, make the followiong changes in file: "src/settings/settingsOption.h":
+```
+#ifndef USE_DST
+#define USE_DST
+#endif
+```
+Change this into:
+```
+#ifdef USE_DST
+#undef USE_DST  // Do not use for mow
+#endif
+```
+
+3. If you use dst awareness (default) then set the region of your choice in file "src/utils/isDst.h".
+```
+#define REGION_EUROPE
+// #define REGION_USA
+```
+In this moment there are only two regions/cities pre-programmed:
+- EUROPE/LISBON;
+- USA/NEW_YORK
+Default is set for EUROPE/LISBON. Only the EU_LISBON_dst_table.json file I have uploaded to my SQUiXL.
+If you want to change for USA/NEW_YORK, take care that you upload /data/USA_NY_dst_table.json to the filesystem of the SQUiXL.
+I advise you to upload only one ...dst_table.json file to the filesystem of the SQUiXL. (Check that only one ...dst_table.json file is in folder /data.
+
+In file "/src/utils/isDst.cpp there are these line of code regarding the dst region/city:
+```
+#ifdef REGION_EUROPE
+  psram_string fn = "/EU_LISBON_dst_table.json";
+#endif
+
+#ifdef REGION_USA
+  psram_string fn = "/US_NEW_YORK_dst_table.json";
+#endif
+```
+
 ### Added hardware:
 - Pimoroni Pico LiPo 2XL W [info](https://shop.pimoroni.com/products/pimoroni-pico-lipo-2-xl-w?variant=55447911006587), in the role of MQTT Publisher2.
 
@@ -217,19 +339,25 @@ On my SQUiXL all the (many) WiFi errors became history. Also the RSS FEEDS and J
 
 Files changed by me:
 ```
+/.pio/libdebs/squixl/PubSubClient/src/PubSubClient.cpp     (add print statements to show the MQTT_MAX_PACKET_SIZE value
 /src/squixl.cpp (in function: process_backlight_dimmer() to not dim the backlight while on 5V power)
-/src/settings/settingsOption.h  (added definition: #define USE_PAULSKPT_PARTS)
+/src/settings/settingsOption.h  (added definitions: #define USE_PAULSKPT_PARTS, #define USE_DST and #define SHOW_FILES_OF_FILESYSTEM)
 /src/mqtt/mqtt.h
 /src/mqtt/mqtt.cpp
 /src/ui/scrollarea.cpp
 ```
 Files created and added by me:
 ```
+/data/EU_LISBON_dst_table.json        (the idea is to only upload one of the two, or one you create yourself for your region/city)
+/data/USA_NY_dst_table.json
 /src/metar/metar_data.h
 /src/metar/metar_data.cpp
+/src/utils/isDst.h
+/src/utils/isDst.cpp
 /src/utils/RtcFormatter.h (used in mqtt.cpp)
 /src/utils/RtcFormatter.cpp
 ```
 See: [photos](https://imgur.com/a/ARvUNSK)
 
-
+## Final note
+About the Adafruit Feather ESP32-S3 TFT Publisher devic. I tried to add functionality to receive from internet METAR (aviation) weather reports from "metar-taf.com". This attempt failed because of memory limitations. I created another project for a Pimoroni Pico LiPo 2XL W for which I created a sketch to: a) received the METAR from "metar-taf.com", filter the received data and send the METAR data as a MQTT message. This will be published in another repo.

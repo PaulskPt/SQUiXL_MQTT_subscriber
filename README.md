@@ -39,8 +39,6 @@ Download the latest version of Unexpected Maker [SQUiXL DevOS](https://github.co
                    RtcFormatter.h
                    RtcFormatter.cpp
                main.cpp
-               squixl.h
-               squixl.cpp
             platform.ini
 ```
 

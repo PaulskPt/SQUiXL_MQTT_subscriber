@@ -210,8 +210,6 @@ To have the Publisher device be able to connect to the internet, to get, at inte
 #define SECRET_MQTT_TOPIC_SUFFIX_TODO "todo"
 #define SECRET_DISPLAY_SLEEPTIME "23"
 #define SECRET_DISPLAY_AWAKETIME "7"
-#define SECRET_METAR_TAF_API_KEY "<Your metar-taf.com API KEY>"
-#define SECRET_METAR_FETCH_LIMIT "5" // Only during tests. A limiter to not to "lose" too many credits
 ```
 
 # MQTT broker

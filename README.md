@@ -333,10 +333,10 @@ In this moment there are only two regions/cities pre-programmed:
 - EUROPE/LISBON;
 - USA/NEW_YORK
 Default is set for EUROPE/LISBON. Only the EU_LISBON_dst_table.json file I have uploaded to my SQUiXL.
-If you want to change for USA/NEW_YORK, take care that you upload /data/USA_NY_dst_table.json to the filesystem of the SQUiXL.
-I advise you to upload only one ...dst_table.json file to the filesystem of the SQUiXL. (Check that only one ...dst_table.json file is in folder /data.
+If you want to change for USA/NEW_YORK, take care that you upload file: "data/USA_NY_dst_table.json" to the filesystem of the SQUiXL.
+I advise you to upload only one "...dst_table.json" file to the filesystem of the SQUiXL. (Check that only one "...dst_table.json" file is in folder /data).
 
-In file "/src/utils/isDst.cpp there are these line of code regarding the dst region/city:
+In file "src/utils/isDst.cpp" there are these line of code regarding the dst region/city:
 ```
 #ifdef REGION_EUROPE
   psram_string fn = "/EU_LISBON_dst_table.json";

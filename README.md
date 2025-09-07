@@ -21,6 +21,7 @@ Download the latest version of Unexpected Maker [SQUiXL DevOS](https://github.co
                      PubSubClient.cpp
              .vscode
              > data
+                EU_LISBON_dst_table.json
              > lib
              > src
                > metar

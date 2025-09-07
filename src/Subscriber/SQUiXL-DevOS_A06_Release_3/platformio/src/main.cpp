@@ -599,7 +599,7 @@ void setup()
 {
 	unsigned long timer = millis();
 
-	 mqtt_stuff.setup();  // 👈 This sets the buffer size and any other MQTT init logic
+	 mqtt_stuff.setup();  // 👈 This sets the mqtt payload buffer size and any other MQTT init logic. Added by @PaulskPt
 
 	// Set PWM for backlight chage pump IC
 	pinMode(BL_PWM, OUTPUT);

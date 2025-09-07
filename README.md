@@ -379,4 +379,4 @@ Files created and added by me:
 See: [photos](https://imgur.com/a/ARvUNSK)
 
 ## Final note
-About the Adafruit Feather ESP32-S3 TFT Publisher devic. I tried to add functionality to receive from internet METAR (aviation) weather reports from "metar-taf.com". This attempt failed because of memory limitations. I created another project for a Pimoroni Pico LiPo 2XL W for which I created a sketch to: a) received the METAR from "metar-taf.com", filter the received data and send the METAR data as a MQTT message. This will be published in another repo.
+About the Adafruit Feather ESP32-S3 TFT Publisher devic. I tried to add functionality to receive from internet METAR (aviation) weather reports from "metar-taf.com". This attempt failed because of memory limitations. I created another project for a Pimoroni Pico LiPo 2XL W for which I created a sketch to: a) received the METAR from "metar-taf.com", filter the received data and send the METAR data as a MQTT message. This has been published in [repo](https://github.com/PaulskPt/Presto_MQTT_multi_topic_subscriber/blob/main/src/Publisher/Publisher2_V1/metar_mqtt_v1/metar_mqtt_v1.py).

@@ -121,6 +121,8 @@ while in file: "src/main.cpp" I added:
 602 mqtt_stuff.setup();  // 👈 This sets the buffer size and any other MQTT init logic
 ```
 
+The abbreviations created:
+
 In the "doc" section:
 owner        -> ow
 description  -> de

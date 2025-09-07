@@ -1,16 +1,28 @@
 #pragma once
 #include "squixl.h"
+#include "settings/settingsOption.h"
 
-#ifndef USE_PAULSKPT_PARTS
-#define USE_PAULSKPT_PARTS   (1)  // for now: do not use 
-#endif
+//#ifndef USE_PAULSKPT_PARTS
+//#define USE_PAULSKPT_PARTS   (1)  // for now: do not use 
+//#endif
 
 #ifdef USE_PAULSKPT_PARTS
 #include <vector>        // same
 #include <string>        // same
 #include "metar/metar_data.h"
-
 #endif
+
+#ifdef USE_DST
+#include "utils/isDst.h"
+#endif
+
+struct TimezoneInfo {
+  String timezone;
+  String current_time;
+  String utc_offset;
+  bool is_dst;
+  bool success;
+};
 
 class ui_gauge;
 
@@ -90,6 +102,7 @@ PsramAllocator<std::pair<const psram_string, MQTTVector>>
 class MQTT_Stuff
 {
 	public:
+		void setup();
 		std::map<
 				psram_string,
 				std::vector<MQTT_Payload, PsramAllocator<MQTT_Payload>>,
@@ -121,6 +134,8 @@ class MQTT_Stuff
 #ifdef USE_PAULSKPT_PARTS
 		std::string convertIntToStr(int tmStamp);  // Added by @PaulskPt
 #endif
+
+		bool dst_fetched = false; 
 
 		unsigned long next_mqtt_reconnect = 0;
 

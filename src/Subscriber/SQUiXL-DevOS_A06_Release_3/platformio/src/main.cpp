@@ -599,6 +599,8 @@ void setup()
 {
 	unsigned long timer = millis();
 
+	 mqtt_stuff.setup();  // 👈 This sets the buffer size and any other MQTT init logic
+
 	// Set PWM for backlight chage pump IC
 	pinMode(BL_PWM, OUTPUT);
 	ledcAttach(BL_PWM, 6500, LEDC_TIMER_12_BIT);

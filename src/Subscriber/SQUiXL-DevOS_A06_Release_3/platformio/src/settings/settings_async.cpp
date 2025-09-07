@@ -61,6 +61,10 @@ void Settings::async_task(void *pv)
 	{
 		if (xQueueReceive(self->queue, &req, portMAX_DELAY) == pdTRUE)
 		{
+#ifdef MY_DEBUG  // Added by @PaulskPt
+			UBaseType_t messagesWaiting = uxQueueMessagesWaiting(self->queue);
+			Serial.printf("📦 Queue depth after dequeue: %u\n", messagesWaiting);
+#endif
 			self->busy = true;
 			if (req.op == LOAD)
 				self->_load_sync();

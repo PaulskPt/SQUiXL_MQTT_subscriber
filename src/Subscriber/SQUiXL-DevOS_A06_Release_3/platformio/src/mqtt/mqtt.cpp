@@ -1,7 +1,13 @@
 #include "mqtt/mqtt.h"
+#include <Arduino.h>
+#define MQTT_MAX_PACKET_SIZE 512
 #include <PubSubClient.h>
+#include "settings/settings_async.h" // for config.location.country
+#include "settings/settingsOption.h"
+//#include "settings/settings_async.h"
+
 #ifdef USE_PAULSKPT_PARTS
-#include "squixl.h"
+#include "squixl.h"   // for utc_offset_seconds (and ...)
 #include "RTC.h"
 #include <ArduinoJson.h> // added by @PaulskPt (suggested by Copilot)
 #include <vector>        // same
@@ -12,6 +18,7 @@
 #include <ctime>
 #include "utils/RtcFormatter.h"
 #endif
+
 
 using json = nlohmann::json;
 
@@ -26,6 +33,11 @@ PubSubClient mqtt_client(espClientMQTT);
 //METAR metar_data;
 
 const size_t MAX_TOTAL_PAYLOADS = 1;
+
+void MQTT_Stuff::setup() {
+  // Other setup code...
+  mqtt_client.setBufferSize(512);
+}
 
 template<typename MapType>
 void MQTT_Stuff::mqtt_clean_map_if_needed(MapType& mqtt_topic_payloads) {
@@ -69,7 +81,7 @@ METAR MQTT_Stuff::mqtt_split_metar(const std::string& msg) {
 		Serial.println(F("mqtt_split_metar(): "));
 		Serial.print(F("parameter: msg = "));
 		Serial.println(msg.c_str());
-		Serial.print(F("metar.section1 = \""));
+			Serial.print(F("metar.section1 = \""));
 		Serial.print(metar.section1.c_str());
 		Serial.println("\"");
 		Serial.print(F("metar.section2 = \""));
@@ -83,7 +95,7 @@ METAR MQTT_Stuff::mqtt_split_metar(const std::string& msg) {
     return metar;
 }
 
-#endif
+#endif  // USE_PAULSKPT_PARTS
 
 // Static callback that wraps the instance method
 void MQTT_Stuff::static_mqtt_callback(char *topic, byte *message, unsigned int length)
@@ -93,6 +105,29 @@ void MQTT_Stuff::static_mqtt_callback(char *topic, byte *message, unsigned int l
 
 void MQTT_Stuff::mqtt_callback(char *topic, byte *message, unsigned int length)
 {
+	static constexpr const char txt0[] PROGMEM = "mqtt_callback(): ";
+
+	bool endsWithThreeBraces = 
+			length >= 3 &&
+			(char)message[length - 1] == '}' &&
+			(char)message[length - 2] == '}' &&
+			(char)message[length - 3] == '}';
+
+	if (!endsWithThreeBraces) {
+		if (length == 256) {
+			Serial.print(txt0);
+			Serial.println(F("🔍 Raw message content (truncated):"));
+			for (unsigned int i = 0; i < length; i++) {
+				Serial.print((char)message[i]);
+			}
+			Serial.println();
+		}
+		Serial.print(F("⚠️  Skipped message, length: "));
+		Serial.printf("%u", length);
+		Serial.println(F(" — missing final '}}}'"));
+		return;
+	}
+
 	String messageTemp;
 	for (int i = 0; i < length; i++)
 		messageTemp += (char)message[i];
@@ -103,26 +138,30 @@ void MQTT_Stuff::mqtt_callback(char *topic, byte *message, unsigned int length)
 #endif
 
 #ifdef USE_PAULSKPT_PARTS
-
-	char payloadBuffer[length + 1]; 
-	memcpy(payloadBuffer, message, length); 
-	payloadBuffer[length] = '\0';
-
-	Serial.printf("New message on topic: %s\n", topic); 
-	Serial.printf("message: %s\n", payloadBuffer);
+  Serial.print(txt0);
+	Serial.print(F("New message on topic: "));
+	Serial.printf("%s\n", topic); 
+	Serial.print(F("message: "));
+	Serial.printf("%s\n", messageTemp.c_str());
 
 	if (strstr(topic, "sensor") != NULL || strstr(topic, "weather") != NULL)  
 	{
 		// Next line added on advise of MS Copilot
 		mqtt_topic_payloads.clear(); // ✅ Clear old data before parsing new one
-		// Static is depricated! (source: Copilot), 
-		// however creates another error: :JsonDocument' is not a template
+
 		StaticJsonDocument<512> doc;
-		DeserializationError error = deserializeJson(doc, payloadBuffer);
+		DeserializationError error = deserializeJson(doc, messageTemp);
 
 		if (error) { 
+			Serial.print(txt0);
 			Serial.print("❌ JSON parse error: ");
 			Serial.println(error.c_str()); 
+#ifndef MY_DEBUG
+			Serial.print(F("messageTemp length: "));
+			Serial.printf("%d\n", messageTemp.length());
+			Serial.println(F("messageTemp content:"));
+			Serial.println(messageTemp);
+#endif
 			return;
 		}
 	
@@ -155,14 +194,21 @@ void MQTT_Stuff::mqtt_callback(char *topic, byte *message, unsigned int length)
 		MQTT_Payload payload;
 		
 		JsonObject header = doc["hd"];
-   
 		psram_string owner        = header["ow"] | "";
 		psram_string description  = header["de"] | "";
 		psram_string device_class = header["dc"] | "";
 		psram_string state_class  = header["sc"] | "";
 		psram_string value_type   = header["vt"] | "";
 		psram_string tsStr        = header["t"]  | "";
-		unsigned long ts;
+		// get the unixTime from the MQTT message header section
+		time_t ts = header["t"].as<long>(); // time(nullptr);
+
+#ifdef MY_DEBUG
+		Serial.print(txt0);
+		Serial.print(F("header[\"t\"] = "));
+		Serial.printf("%lu\n",header["t"]);
+#endif
+
 #ifdef MY_DEBUG
 		Serial.print(F("mqtt_callback(): owner = "));
 		Serial.println(owner.c_str());
@@ -176,12 +222,39 @@ void MQTT_Stuff::mqtt_callback(char *topic, byte *message, unsigned int length)
 							// ------------ Addition 2025-08-30 by @PaulskPt
 							// to convert the GMT related mqtt msg value of key header["t"]
 							// to local time
-							int utc_offset_seconds = settings.config.location.utc_offset * 3600;
-							//int localTimestamp = payload.timestamp + utc_offset_seconds;
-							int timestampLocalOriginal = header["t"].as<long>();
-							int timestampLocalNew = timestampLocalOriginal + utc_offset_seconds;
-							psram_string timestampStrLocalNew = rtc.unix_timestamp_to_time_str(timestampLocalNew);
-							psram_string timestampStr = RtcFormatter::format_datetime(timestampLocalNew, true);
+#ifdef USE_DST
+							#include "utils/isDst.h"
+
+							DSTInfo current;
+							current = getDSTInfo(ts);
+							int my_utc_offset = 0;	// Default
+							bool isDst = current.is_dst;
+							if (isDst)
+								my_utc_offset = current.utc_offset;
+							String tz_abbreviation = current.tz_abbr;
+							int utc_offset_seconds = my_utc_offset * 3600;
+#ifndef MY_DEBUG
+							Serial.print(txt0);
+							Serial.printf("Time Zone:  %s, ", current.tz_abbr.c_str());
+							Serial.printf("DST Active: %s\n", current.is_dst ? "Yes" : "No");
+							Serial.print(txt0);
+							Serial.printf("UTC Offset: %d hour(s), in seconds: %d\n", current.utc_offset, utc_offset_seconds);
+#endif
+
+#else  // USE_DST
+					  	int utc_offset_seconds = settings.config.location.utc_offset * 3600;
+#endif // USE_DST
+
+#else // USE_LOCAL_TIME_PAULSKPT
+							int utc_offset_seconds = 0;
+#endif // USE_LOCAL_TIME_PAULSKPT
+							int timestampLocal = ts + utc_offset_seconds;
+							psram_string timestampStr = RtcFormatter::format_datetime(timestampLocal, true);
+#ifndef MY_DEBUG
+							Serial.print(txt0);
+							Serial.print(F("timestampStr: "));
+							Serial.println(timestampStr.c_str());
+#endif
 #ifdef MY_DEBUG
 							Serial.print(F("mqtt_callback(): "));
 							Serial.print(F("utc_offset_seconds = "));
@@ -196,7 +269,6 @@ void MQTT_Stuff::mqtt_callback(char *topic, byte *message, unsigned int length)
 							Serial.println(timestampStr.c_str());
 #endif
 							// ------- end of addition ---------------------
-#endif
 
 		payload.owner         = (owner == "Feath") ? "Feather" : owner;
 		payload.description   = description;
@@ -216,7 +288,7 @@ void MQTT_Stuff::mqtt_callback(char *topic, byte *message, unsigned int length)
 #endif 
 
 //#ifdef USE_METAR
-		if (owner == "Feath")
+if (owner == "Feath")
 		{
 		  JsonObject readings = doc["reads"];
 
@@ -269,13 +341,15 @@ void MQTT_Stuff::mqtt_callback(char *topic, byte *message, unsigned int length)
 						Serial.print(F("\nMQTT: New Sensor owner: "));
 						Serial.printf("%s\n",	payload.owner.c_str());
 						Serial.print(F("MQTT: Added new sensor from "));
-						Serial.printf("%s, loc: %s, dev: %s (%-*s) at: %s\n",
+						Serial.printf("%s, loc: %s, dev: %s (%-*s %s %s) at: %s\n",
 								payload.owner.c_str(),
 								payload.description.c_str(),
 								payload.device_class.c_str(), 
 								(int)longestTermLength, payload.term.c_str(),
+								payload.sensor_value.c_str(),
+								payload.unit_of_measurement.c_str(),
 								payload.timestampStr.c_str());
-								payload.msgID.c_str();
+								//payload.msgID.c_str();
 						mqtt_dirty = true; 
 				} 
 				else 
@@ -293,7 +367,6 @@ void MQTT_Stuff::mqtt_callback(char *topic, byte *message, unsigned int length)
 
 							existing.upate_from(payload); 
 
-
 #ifndef USE_LOCAL_TIME_PAULSKPT
 							if (use_human_readable_format)
 							{
@@ -305,8 +378,7 @@ void MQTT_Stuff::mqtt_callback(char *topic, byte *message, unsigned int length)
 								timestampStr = std::to_string(payload.timestamp).c_str();
 								
 							}
-#endif
-							payload.timestampStr = timestampStr;
+#endif  // USE_LOCAL_TIME_PAULSKPT
 							// "from" instead UM's "for"
 							/*
 							Serial.printf("MQTT: Updated sensor %s: %s (%s) from %s at %s\n",
@@ -317,11 +389,13 @@ void MQTT_Stuff::mqtt_callback(char *topic, byte *message, unsigned int length)
 														payload.timestampStr.c_str()); 
 							*/
 						  Serial.print(F("MQTT: Updated sensor, from "));
-							Serial.printf("%s, loc: %s, dev: %s (%-*s) at: %s\n",
+							Serial.printf("%s, loc: %s, dev: %s (%-*s %s %s) at: %s\n",
 								payload.owner.c_str(),
 								payload.description.c_str(),
 								payload.device_class.c_str(), 
 								(int)longestTermLength, payload.term.c_str(), 
+								payload.sensor_value.c_str(),
+								payload.unit_of_measurement.c_str(),
 								payload.timestampStr.c_str());
 
 							mqtt_dirty = true; 
@@ -334,13 +408,15 @@ void MQTT_Stuff::mqtt_callback(char *topic, byte *message, unsigned int length)
 					{
 						mqtt_topic_payloads[payload.owner].push_back(payload); 
 						Serial.print(F("\nMQTT: Added new sensor, msgID "));
-						Serial.printf("%s from %s, loc: %s, dev: %s (%-*s) \nNow has %d sensors\n", 
+						Serial.printf("%s from %s, loc: %s, dev: %s (%-*s %s %s) \nNow has %d sensors\n", 
 													payload.msgID.c_str(),
 													payload.owner.c_str(), 
 													payload.description.c_str(),
 													payload.device_class.c_str(),
 													(int)longestTermLength, payload.term.c_str(), 
-													mqtt_topic_payloads[payload.owner].size()); 
+													payload.sensor_value.c_str(),
+													payload.unit_of_measurement.c_str(),
+													mqtt_topic_payloads[payload.owner].size());
 						delay(100); // try to get "Temperature" Serial.printf complete
 						mqtt_dirty = true; 
 					} 

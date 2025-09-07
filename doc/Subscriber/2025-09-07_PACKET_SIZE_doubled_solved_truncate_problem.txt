@@ -1,0 +1,37 @@
+Sunday 2025-09-07
+
+Project: SQUiXL MQTT multi topic subscriber
+
+Problem: 
+MQTT messages topic "sensor/Feath/ambient", sent by an Adafruit Feather ESP32-S3 TFt (role: MQTT Publisher device) often with a payload length of 257 bytes, arrived in the Unexpected Maker SQUiXL (role: MQTT Subscriber device), truncated. Often the last curly bracket was missing. Note that in a "normal" MQTT message of this topic there are three closing curly brackets at the end of the message.
+
+Solution:
+1) a doubling of the ArduinoMqttClient (file:  SQUiXL firmware /platformio/.pio/libdeps/squixl/PubSubClient/PubSubClient.cpp), TX_PAYLOAD_BUFFER_SIZE from 256 to 512 bytes;
+2) doubling the PubSubClient MQTT_MAX_PACKET_SIZE from 256 to 512 bytes
+3) to be sure I also added in the top of file: mqtt.cpp:
+ #define MQTT_MAX_PACKET_SIZE 512    <<<=== 
+ #include <PubSubClient.h>
+ 
+These changes resulted in no more JSON parse errors in the SQUiXL-DevOS firmware (A06, release 3)
+ 
+Below a part of the serial output in VSCode/PlatformIO terminal window:
+-----------------------------------------------------------------------
+mqtt_callback(): New message on topic: sensors/Feath/ambient
+message: {"hd":{"ow":"Feath","de":"Lab","dc":"BME280","sc":"meas","vt":"f","t":1757251452},"reads":{"t":{"v":28.4,"u":"C","mn":-10,"mx":50},"p":{"v":1005.4,"u":"mB","mn":800,"mx":1200},"a":{"v":91,"u":"m","mn":0,"mx":3000},"h":{"v":61.4,"u":"%","mn":0,"mx":100}}}
+getDSTInfo(): year 2025 found in DST start/end table for country/city: PT/Lisbon
+mqtt_callback(): Time Zone:  WEST, DST Active: Yes
+mqtt_callback(): UTC Offset: 1 hour(s), in seconds: 3600
+mqtt_callback(): timestampStr: 2025-09-07T14:24:12+01:00
+
+MQTT: New Sensor owner: Feather
+MQTT: Added new sensor from Feather, loc: Lab, dev: BME280 (Temperature: 28.4 °C) at: 2025-09-07T14:24:12+01:00      
+
+MQTT: Added new sensor, msgID 1757251452 from Feather, loc: Lab, dev: BME280 (Pressure:    1005.4 mB)
+Now has 2 sensors
+
+MQTT: Added new sensor, msgID 1757251452 from Feather, loc: Lab, dev: BME280 (Altitude:    91.0 m) 
+Now has 3 sensors
+
+MQTT: Added new sensor, msgID 1757251452 from Feather, loc: Lab, dev: BME280 (Humidity:    61.4 %) 
+Now has 4 sensors
+----------------------------------------------------------

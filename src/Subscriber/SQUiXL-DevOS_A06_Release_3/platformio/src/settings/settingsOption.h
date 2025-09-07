@@ -8,8 +8,17 @@
 
 /* ----------- 2025-08-30 added by @PaulskPt ----------*/
 #ifndef USE_PAULSKPT_PARTS
-#define USE_PAULSKPT_PARTS   (1)  // for now: do not use 
+#define USE_PAULSKPT_PARTS   (1)
 #endif
+
+#ifndef USE_DST
+#define USE_DST  // Do not use for mow
+#endif
+
+#ifdef  SHOW_FILES_OF_FILESYSTEM // See utils/isDST.cpp - do not use for now
+#undef  SHOW_FILES_OF_FILESYSTEM   
+#endif
+
 /* ----------------------------------------------------*/
 struct wifi_station;
 struct mqtt_topic;
